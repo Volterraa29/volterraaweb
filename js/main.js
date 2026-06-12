@@ -18,9 +18,9 @@ const PRODUCTS = [
   { id:7,  name:"Zepeto",            kategori:"Top Up",   emoji:"👾",  color:"#f0ffe4", desc:"Top up Zepeto Coin dengan mudah dan aman.",                                price:"Mulai Rp 6.000",  harga:6000  },
   { id:8,  name:"League of Legends", kategori:"Top Up",   emoji:"🏆",  color:"#fffbe4", desc:"Top up Riot Points League of Legends.",                                    price:"Mulai Rp 15.000", harga:15000 },
   { id:9,  name:"Joki ML Mythic",    kategori:"Joki",     emoji:"🚀",  color:"#ffe4f0", desc:"Push rank Mobile Legends hingga Mythic. Dijamin aman, akun tidak banned.", price:"Rp 50.000",       harga:50000 },
-  { id:10, name:"Joki FF Grand Master", kategori:"Joki",  emoji:"🎖️", color:"#fff4e0", desc:"Boost rank Free Fire hingga Grand Master dalam 1–3 hari.",                price:"Rp 35.000",       harga:35000 },
+  { id:10, name:"Joki FF Grand Master", kategori:"Joki",  emoji:"🎖️", color:"#fff4e0", desc:"Boost rank Free Fire hingga Grand Master dalam 1-3 hari.",                price:"Rp 35.000",       harga:35000 },
   { id:11, name:"Joki PUBG Platinum",kategori:"Joki",     emoji:"🎯",  color:"#e0f4ff", desc:"Push rank PUBG Mobile hingga Platinum dijamin cepat.",                    price:"Rp 40.000",       harga:40000 },
-  { id:12, name:"Joki Valorant Gold",kategori:"Joki",     emoji:"🌀",  color:"#ffe4e4", desc:"Boost rank Valorant ke Gold, proses 2–5 hari.",                           price:"Rp 55.000",       harga:55000 },
+  { id:12, name:"Joki Valorant Gold",kategori:"Joki",     emoji:"🌀",  color:"#ffe4e4", desc:"Boost rank Valorant ke Gold, proses 2-5 hari.",                           price:"Rp 55.000",       harga:55000 },
   { id:13, name:"Skin ML Epic",      kategori:"Item",     emoji:"🛡️", color:"#e4ffe4", desc:"Skin Epic Mobile Legends pilihan, langsung masuk akun dalam 10 menit.",   price:"Rp 25.000",       harga:25000 },
   { id:14, name:"Item FF Rare",      kategori:"Item",     emoji:"💼",  color:"#ffe4e4", desc:"Bundle dan item rare Free Fire berbagai pilihan.",                         price:"Rp 20.000",       harga:20000 },
   { id:15, name:"Skin PUBG Legendary",kategori:"Item",    emoji:"🎽",  color:"#fffbe4", desc:"Skin Legendary PUBG Mobile dengan harga spesial.",                        price:"Rp 30.000",       harga:30000 },
@@ -34,10 +34,13 @@ const PRODUCTS = [
 ];
 
 // ===== STATE =====
-let currentUser  = null;
-let favorites    = [];
+let currentUser   = null;
+let favorites     = [];
 let currentFilter = "semua";
-let bannerIndex  = 0;
+let bannerIndex   = 0;
+
+// ===== HELPERS =====
+const el = (id) => document.getElementById(id);
 
 // ===== AUTH LISTENER =====
 onAuthChange(async (user) => {
@@ -45,49 +48,50 @@ onAuthChange(async (user) => {
   if (user) {
     await saveUserProfile(user);
     favorites = await getFavoritFromFirestore(user);
-    updateAkunUI(user);
   } else {
     favorites = [];
-    updateAkunUI(null);
   }
-  // Re-render grids yang sudah tampil
+  updateAkunUI(user);
   renderTopupGrid();
   renderPopularGrid();
-  if (document.getElementById("page-store").classList.contains("active"))   renderStoreGrid(currentFilter);
-  if (document.getElementById("page-history").classList.contains("active")) await renderHistory();
-  if (document.getElementById("page-favorit").classList.contains("active")) renderFavorit();
+  if (el("page-store")?.classList.contains("active"))   renderStoreGrid(currentFilter);
+  if (el("page-history")?.classList.contains("active")) await renderHistory();
+  if (el("page-favorit")?.classList.contains("active")) renderFavorit();
 });
 
 // ===== UPDATE UI AKUN =====
 function updateAkunUI(user) {
-  const loginBtn  = document.getElementById("loginBtn");
-  const logoutBtn = document.getElementById("logoutBtn");
-  const akunName  = document.getElementById("akunName");
-  const akunSub   = document.getElementById("akunSub");
-  const akunPhoto = document.getElementById("akunPhoto");
+  const loginBtn  = el("loginBtn");
+  const logoutBtn = el("logoutBtn");
+  const akunName  = el("akunName");
+  const akunSub   = el("akunSub");
+  const akunPhoto = el("akunPhoto");
+  const googleBtn = el("googleLoginBtn");
 
   if (user) {
-    loginBtn.textContent = user.displayName.split(" ")[0];
-    akunName.textContent = user.displayName;
-    akunSub.textContent  = user.email;
-    logoutBtn.style.display = "";
-    if (user.photoURL) {
-      akunPhoto.innerHTML = `<img src="${user.photoURL}" style="width:64px;height:64px;border-radius:50%;object-fit:cover">`;
-    } else {
-      akunPhoto.textContent = "👤";
+    if (loginBtn)  loginBtn.textContent = user.displayName.split(" ")[0];
+    if (akunName)  akunName.textContent = user.displayName;
+    if (akunSub)   akunSub.textContent  = user.email;
+    if (logoutBtn) logoutBtn.style.display = "";
+    if (googleBtn) googleBtn.style.display = "none";
+    if (akunPhoto) {
+      akunPhoto.innerHTML = user.photoURL
+        ? `<img src="${user.photoURL}" style="width:64px;height:64px;border-radius:50%;object-fit:cover">`
+        : "👤";
     }
   } else {
-    loginBtn.textContent = "Masuk";
-    akunName.textContent = "Tamu";
-    akunSub.textContent  = "Belum login";
-    logoutBtn.style.display = "none";
-    akunPhoto.textContent = "👤";
+    if (loginBtn)  loginBtn.textContent = "Masuk";
+    if (akunName)  akunName.textContent = "Tamu";
+    if (akunSub)   akunSub.textContent  = "Belum login";
+    if (logoutBtn) logoutBtn.style.display = "none";
+    if (googleBtn) googleBtn.style.display = "flex";
+    if (akunPhoto) akunPhoto.innerHTML = "👤";
   }
 }
 
 // ===== RENDER: TOPUP GRID =====
 function renderTopupGrid() {
-  const grid = document.getElementById("topupGrid");
+  const grid = el("topupGrid");
   if (!grid) return;
   const items = PRODUCTS.filter(p => p.kategori === "Top Up").slice(0, 8);
   grid.innerHTML = items.map(p => `
@@ -102,7 +106,7 @@ function renderTopupGrid() {
 
 // ===== RENDER: POPULAR GRID =====
 function renderPopularGrid() {
-  const grid = document.getElementById("popularGrid");
+  const grid = el("popularGrid");
   if (!grid) return;
   const items = PRODUCTS.filter(p => ["Joki","Boosting","Item"].includes(p.kategori)).slice(0, 4);
   grid.innerHTML = items.map(p => renderStoreCard(p)).join("");
@@ -115,11 +119,11 @@ function renderStoreCard(p) {
     <div class="store-card">
       <div class="s-thumb" style="background:${p.color}">
         <span style="font-size:38px">${p.emoji}</span>
-        <button class="fav-btn" onclick="toggleFav(${p.id}, this)">${isFav ? "❤️" : "🤍"}</button>
+        <button class="fav-btn" onclick="toggleFav(${p.id},this)">${isFav ? "❤️" : "🤍"}</button>
       </div>
       <div class="s-info">
         <h4>${p.name}</h4>
-        <p>${p.desc.substring(0, 45)}…</p>
+        <p>${p.desc.substring(0,45)}...</p>
         <div class="s-price">${p.price}</div>
         <button class="s-btn" onclick='openModal(${JSON.stringify(p)})'>Pesan Sekarang</button>
       </div>
@@ -130,7 +134,7 @@ function renderStoreCard(p) {
 // ===== RENDER: STORE GRID =====
 function renderStoreGrid(filter) {
   currentFilter = filter;
-  const grid  = document.getElementById("storeGrid");
+  const grid = el("storeGrid");
   if (!grid) return;
   const items = filter === "semua" ? PRODUCTS : PRODUCTS.filter(p => p.kategori === filter);
   grid.innerHTML = items.length
@@ -140,7 +144,7 @@ function renderStoreGrid(filter) {
 
 // ===== RENDER: HISTORY =====
 async function renderHistory() {
-  const list = document.getElementById("historyList");
+  const list = el("historyList");
   if (!list) return;
   if (!currentUser) {
     list.innerHTML = '<div class="empty"><div class="empty-icon">🔐</div>Login dengan Google untuk melihat riwayat pesanan</div>';
@@ -172,7 +176,7 @@ async function renderHistory() {
 
 // ===== RENDER: FAVORIT =====
 function renderFavorit() {
-  const list  = document.getElementById("favoritList");
+  const list = el("favoritList");
   if (!list) return;
   if (!currentUser) {
     list.innerHTML = '<div class="empty"><div class="empty-icon">🔐</div>Login dengan Google untuk menyimpan favorit</div>';
@@ -181,13 +185,15 @@ function renderFavorit() {
   const items = PRODUCTS.filter(p => favorites.includes(p.id));
   list.innerHTML = items.length
     ? '<div class="store-grid" style="padding:0">' + items.map(p => renderStoreCard(p)).join("") + '</div>'
-    : '<div class="empty"><div class="empty-icon">❤️</div>Belum ada produk favorit<br><small>Tap 🤍 pada produk untuk menambahkan</small></div>';
+    : '<div class="empty"><div class="empty-icon">❤️</div>Belum ada produk favorit<br><small>Tap hati pada produk untuk menambahkan</small></div>';
 }
 
 // ===== RENDER: SIDEBAR =====
 function renderSidebar() {
+  const sidebar = el("sidebarContent");
+  if (!sidebar) return;
   const cats = [
-    { label:"Top Up Game", filter:"Top Up" },
+    { label:"Top Up Game", filter:"Top Up"  },
     { label:"Joki",        filter:"Joki",    baru:true },
     { label:"Item",        filter:"Item"    },
     { label:"Akun",        filter:"Akun"    },
@@ -195,7 +201,7 @@ function renderSidebar() {
     { label:"Boosting",    filter:"Boosting"},
     { label:"Semua Produk",filter:"semua"   },
   ];
-  document.getElementById("sidebarContent").innerHTML =
+  sidebar.innerHTML =
     cats.map(c => `
       <button class="sidebar-item" onclick="sidebarFilter('${c.filter}')">
         <span>${c.label}${c.baru ? ' <span class="sidebar-badge">Baru</span>' : ''}</span>
@@ -214,7 +220,7 @@ function renderSidebar() {
 window.showPage = async (page) => {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
-  document.getElementById("page-" + page)?.classList.add("active");
+  el("page-" + page)?.classList.add("active");
   document.querySelector(`[data-page="${page}"]`)?.classList.add("active");
   if (page === "store")   renderStoreGrid(currentFilter);
   if (page === "history") await renderHistory();
@@ -240,7 +246,7 @@ window.sidebarFilter = (cat) => { filterKategori(cat); closeSidebar(); };
 
 // ===== FAVORIT =====
 window.toggleFav = async (id, btn) => {
-  if (!currentUser) { alert("⚠️ Login dulu untuk menyimpan favorit!"); return; }
+  if (!currentUser) { alert("Login dulu untuk menyimpan favorit!"); return; }
   const idx = favorites.indexOf(id);
   if (idx > -1) { favorites.splice(idx, 1); btn.textContent = "🤍"; }
   else          { favorites.push(id);        btn.textContent = "❤️"; }
@@ -250,14 +256,21 @@ window.toggleFav = async (id, btn) => {
 // ===== BANNER =====
 window.goBanner = (n) => {
   bannerIndex = n;
-  document.getElementById("bannerTrack").style.transform = `translateX(${-n * 100}%)`;
+  const track = el("bannerTrack");
+  if (track) track.style.transform = `translateX(${-n * 100}%)`;
   document.querySelectorAll(".banner-dots span").forEach((d, i) => d.classList.toggle("active", i === n));
 };
 setInterval(() => goBanner((bannerIndex + 1) % 3), 4000);
 
 // ===== SIDEBAR =====
-window.openSidebar  = () => { document.getElementById("sidebar").classList.add("show"); document.getElementById("sidebarOverlay").classList.add("show"); };
-window.closeSidebar = () => { document.getElementById("sidebar").classList.remove("show"); document.getElementById("sidebarOverlay").classList.remove("show"); };
+window.openSidebar  = () => {
+  el("sidebar")?.classList.add("show");
+  el("sidebarOverlay")?.classList.add("show");
+};
+window.closeSidebar = () => {
+  el("sidebar")?.classList.remove("show");
+  el("sidebarOverlay")?.classList.remove("show");
+};
 
 // ===== ORDER MODAL =====
 window.openModal = (product) => {
@@ -278,43 +291,31 @@ window.openModal = (product) => {
       <input type="text" id="buyerId"   placeholder="ID Game / Username (jika perlu)">
       <input type="text" id="orderNote" placeholder="Catatan tambahan (opsional)">
       <div class="modal-btns">
-        <button class="btn-pesan" id="confirmOrder">🛒 Pesan Sekarang</button>
+        <button class="btn-pesan" id="confirmOrder">Pesan Sekarang</button>
         <button class="btn-tutup" id="closeModal">Batal</button>
       </div>
     </div>
   `;
   document.body.appendChild(modal);
-  document.getElementById("closeModal").onclick = () => modal.remove();
+  el("closeModal").onclick = () => modal.remove();
   modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
 
-  document.getElementById("confirmOrder").onclick = async () => {
-    const name   = document.getElementById("buyerName").value.trim();
-    const gameId = document.getElementById("buyerId").value.trim();
-    const note   = document.getElementById("orderNote").value.trim();
-    if (!name) { alert("⚠️ Masukkan nama Anda!"); return; }
-
-    const btn = document.getElementById("confirmOrder");
-    btn.textContent = "⏳ Memproses...";
+  el("confirmOrder").onclick = async () => {
+    const name   = el("buyerName").value.trim();
+    const gameId = el("buyerId").value.trim();
+    const note   = el("orderNote").value.trim();
+    if (!name) { alert("Masukkan nama Anda!"); return; }
+    const btn = el("confirmOrder");
+    btn.textContent = "Memproses...";
     btn.disabled = true;
-
-    const order = {
-      product:  product.name,
-      emoji:    product.emoji,
-      kategori: product.kategori,
-      price:    product.price,
-      harga:    product.harga,
-      name, gameId, note
-    };
-
+    const order = { product:product.name, emoji:product.emoji, kategori:product.kategori, price:product.price, harga:product.harga, name, gameId, note };
     try {
-      if (currentUser) {
-        await saveOrderToFirestore(currentUser, order);
-      }
+      if (currentUser) await saveOrderToFirestore(currentUser, order);
       await sendOrderToDiscord(product, name, gameId, note);
-      alert(`✅ Pesanan berhasil!\n\nProduk: ${product.name}\nPemesan: ${name}\n\nTim kami segera memproses pesanan Anda.`);
+      alert(`Pesanan berhasil!\n\nProduk: ${product.name}\nPemesan: ${name}\n\nTim kami segera memproses pesanan Anda.`);
       modal.remove();
     } catch(e) {
-      alert("✅ Pesanan dicatat! Hubungi kami via WhatsApp/Discord untuk konfirmasi.");
+      alert("Pesanan dicatat! Hubungi kami via WhatsApp/Discord untuk konfirmasi.");
       modal.remove();
     }
   };
@@ -330,7 +331,8 @@ window.handleSearch = (q) => {
     p.kategori.toLowerCase().includes(q) ||
     p.desc.toLowerCase().includes(q)
   );
-  const grid = document.getElementById("storeGrid");
+  const grid = el("storeGrid");
+  if (!grid) return;
   grid.innerHTML = items.length
     ? items.map(p => renderStoreCard(p)).join("")
     : '<div class="empty" style="grid-column:1/-1"><div class="empty-icon">🔍</div>Produk tidak ditemukan</div>';
@@ -344,32 +346,43 @@ window.doClearHistory = async () => {
   await renderHistory();
 };
 
-// ===== EVENT LISTENERS =====
-document.getElementById("openSidebar").addEventListener("click", openSidebar);
-document.getElementById("closeSidebar").addEventListener("click", closeSidebar);
-document.getElementById("sidebarOverlay").addEventListener("click", closeSidebar);
-document.getElementById("searchInput").addEventListener("input", e => handleSearch(e.target.value));
+// ===== INIT — tunggu DOM siap =====
+// type="module" sudah defer otomatis, tapi kita pastikan DOM ready
+function init() {
+  // Event listeners — pakai optional chaining supaya tidak error kalau element tidak ada
+  el("openSidebar")?.addEventListener("click", openSidebar);
+  el("closeSidebar")?.addEventListener("click", closeSidebar);
+  el("sidebarOverlay")?.addEventListener("click", closeSidebar);
+  el("searchInput")?.addEventListener("input", e => handleSearch(e.target.value));
 
-document.getElementById("loginBtn").addEventListener("click", async () => {
-  if (!currentUser) {
+  el("loginBtn")?.addEventListener("click", async () => {
+    if (!currentUser) {
+      try { await loginWithGoogle(); }
+      catch(e) { console.error(e); alert("Login gagal. Pastikan popup tidak diblokir browser."); }
+    } else {
+      showPage("account");
+    }
+  });
+
+  el("googleLoginBtn")?.addEventListener("click", async () => {
     try { await loginWithGoogle(); }
-    catch(e) { alert("Login gagal. Coba lagi."); }
-  } else {
-    showPage("account");
-  }
-});
+    catch(e) { console.error(e); alert("Login gagal. Pastikan popup tidak diblokir browser."); }
+  });
 
-document.getElementById("logoutBtn").addEventListener("click", async () => {
-  if (confirm("Yakin ingin keluar?")) await logoutUser();
-});
+  el("logoutBtn")?.addEventListener("click", async () => {
+    if (confirm("Yakin ingin keluar?")) await logoutUser();
+  });
 
-document.getElementById("loginModal")?.addEventListener("click", e => {
-  if (e.target === document.getElementById("loginModal"))
-    document.getElementById("loginModal").style.display = "none";
-});
+  // Render awal
+  renderTopupGrid();
+  renderPopularGrid();
+  renderStoreGrid("semua");
+  renderSidebar();
+}
 
-// ===== INIT =====
-renderTopupGrid();
-renderPopularGrid();
-renderStoreGrid("semua");
-renderSidebar();
+// Jalankan init
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init);
+} else {
+  init();
+}
