@@ -1,6 +1,6 @@
 // ===== main.js =====
 import {
-  loginWithGoogle, logoutUser, onAuthChange,
+  loginWithGoogle, logoutUser, onAuthChange, handleRedirectResult,
   saveUserProfile,
   saveOrderToFirestore, getOrderHistory, clearOrderHistory,
   saveFavoritToFirestore, getFavoritFromFirestore
@@ -43,6 +43,7 @@ let bannerIndex   = 0;
 const el = (id) => document.getElementById(id);
 
 // ===== AUTH LISTENER =====
+handleRedirectResult(); // proses hasil redirect login Google (jika baru kembali dari Google)
 onAuthChange(async (user) => {
   currentUser = user;
   if (user) {
@@ -358,7 +359,7 @@ function init() {
   el("loginBtn")?.addEventListener("click", async () => {
     if (!currentUser) {
       try { await loginWithGoogle(); }
-      catch(e) { console.error(e); alert("Login gagal. Pastikan popup tidak diblokir browser."); }
+      catch(e) { console.error(e); alert("Login gagal. Silakan coba lagi."); }
     } else {
       showPage("account");
     }
@@ -366,7 +367,7 @@ function init() {
 
   el("googleLoginBtn")?.addEventListener("click", async () => {
     try { await loginWithGoogle(); }
-    catch(e) { console.error(e); alert("Login gagal. Pastikan popup tidak diblokir browser."); }
+    catch(e) { console.error(e); alert("Login gagal. Silakan coba lagi."); }
   });
 
   el("logoutBtn")?.addEventListener("click", async () => {

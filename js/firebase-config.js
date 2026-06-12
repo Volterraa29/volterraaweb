@@ -1,6 +1,6 @@
 // ===== firebase-config.js =====
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, deleteDoc, query, orderBy }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -21,12 +21,17 @@ const provider = new GoogleAuthProvider();
 
 // ===== AUTH =====
 async function loginWithGoogle() {
+  // Redirect flow (full page navigation to Google) - tidak terblokir popup blocker
+  await signInWithRedirect(auth, provider);
+}
+
+async function handleRedirectResult() {
   try {
-    const result = await signInWithPopup(auth, provider);
-    return result.user;
+    const result = await getRedirectResult(auth);
+    return result ? result.user : null;
   } catch (e) {
-    console.error("Login error:", e);
-    throw e;
+    console.error("Redirect login error:", e);
+    return null;
   }
 }
 
@@ -86,7 +91,7 @@ async function getFavoritFromFirestore(user) {
 
 export {
   auth, db,
-  loginWithGoogle, logoutUser, onAuthChange,
+  loginWithGoogle, logoutUser, onAuthChange, handleRedirectResult,
   saveUserProfile,
   saveOrderToFirestore, getOrderHistory, clearOrderHistory,
   saveFavoritToFirestore, getFavoritFromFirestore
