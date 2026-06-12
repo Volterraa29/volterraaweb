@@ -10,7 +10,7 @@ import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, deleteD
 //     Buka: Firebase Console → Project Settings → Your Apps
 // ============================================================
 const firebaseConfig = {
-  apiKey:            "GANTI_DENGAN_API_KEY_KAMU",
+  apiKey:            "AIzaSyCLgqGk9O8Nf7i_L4O2Q8nzFphrWtzJPGU",
   authDomain:        "volterraa-store.firebaseapp.com",
   projectId:         "volterraa-store",
   storageBucket:     "volterraa-store.firebasestorage.app",
