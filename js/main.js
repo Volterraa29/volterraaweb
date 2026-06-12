@@ -43,7 +43,9 @@ let bannerIndex   = 0;
 const el = (id) => document.getElementById(id);
 
 // ===== AUTH LISTENER =====
-handleRedirectResult(); // proses hasil redirect login Google (jika baru kembali dari Google)
+// Tangkap hasil redirect login Google (jika user baru kembali dari Google)
+handleRedirectResult().catch(console.error);
+
 onAuthChange(async (user) => {
   currentUser = user;
   if (user) {
@@ -59,6 +61,51 @@ onAuthChange(async (user) => {
   if (el("page-history")?.classList.contains("active")) await renderHistory();
   if (el("page-favorit")?.classList.contains("active")) renderFavorit();
 });
+
+// ===== TOAST NOTIFICATION (pengganti alert) =====
+function showToast(msg, type = "success") {
+  const existing = document.querySelector(".vt-toast");
+  if (existing) existing.remove();
+
+  const toast = document.createElement("div");
+  toast.className = "vt-toast";
+  toast.textContent = msg;
+  toast.style.cssText = `
+    position:fixed; bottom:88px; left:50%; transform:translateX(-50%);
+    background:${type === "error" ? "#e74c3c" : "#16a34a"};
+    color:#fff; padding:12px 20px; border-radius:12px;
+    font-size:14px; font-weight:600; z-index:999;
+    box-shadow:0 4px 16px rgba(0,0,0,.25);
+    animation:toastIn .25s ease;
+    max-width:90%; text-align:center;
+  `;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3500);
+}
+
+// ===== LOADING OVERLAY (untuk proses login) =====
+function showLoadingOverlay(msg = "Memuat...") {
+  const existing = document.querySelector(".vt-loading");
+  if (existing) return;
+  const overlay = document.createElement("div");
+  overlay.className = "vt-loading";
+  overlay.innerHTML = `
+    <div style="background:#fff;border-radius:16px;padding:28px 32px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.2)">
+      <div style="font-size:32px;margin-bottom:12px">⏳</div>
+      <div style="font-size:15px;font-weight:600;color:#1b1b2a">${msg}</div>
+      <div style="font-size:13px;color:#6b7280;margin-top:6px">Mohon tunggu sebentar...</div>
+    </div>
+  `;
+  overlay.style.cssText = `
+    position:fixed;inset:0;background:rgba(0,0,0,.5);
+    z-index:200;display:flex;align-items:center;justify-content:center;
+  `;
+  document.body.appendChild(overlay);
+}
+
+function hideLoadingOverlay() {
+  document.querySelector(".vt-loading")?.remove();
+}
 
 // ===== UPDATE UI AKUN =====
 function updateAkunUI(user) {
@@ -247,7 +294,7 @@ window.sidebarFilter = (cat) => { filterKategori(cat); closeSidebar(); };
 
 // ===== FAVORIT =====
 window.toggleFav = async (id, btn) => {
-  if (!currentUser) { alert("Login dulu untuk menyimpan favorit!"); return; }
+  if (!currentUser) { showToast("Login dulu untuk menyimpan favorit!", "error"); return; }
   const idx = favorites.indexOf(id);
   if (idx > -1) { favorites.splice(idx, 1); btn.textContent = "🤍"; }
   else          { favorites.push(id);        btn.textContent = "❤️"; }
@@ -305,7 +352,7 @@ window.openModal = (product) => {
     const name   = el("buyerName").value.trim();
     const gameId = el("buyerId").value.trim();
     const note   = el("orderNote").value.trim();
-    if (!name) { alert("Masukkan nama Anda!"); return; }
+    if (!name) { showToast("Masukkan nama Anda!", "error"); return; }
     const btn = el("confirmOrder");
     btn.textContent = "Memproses...";
     btn.disabled = true;
@@ -313,11 +360,11 @@ window.openModal = (product) => {
     try {
       if (currentUser) await saveOrderToFirestore(currentUser, order);
       await sendOrderToDiscord(product, name, gameId, note);
-      alert(`Pesanan berhasil!\n\nProduk: ${product.name}\nPemesan: ${name}\n\nTim kami segera memproses pesanan Anda.`);
       modal.remove();
+      showToast(`✅ Pesanan ${product.name} berhasil! Tim kami segera memproses.`);
     } catch(e) {
-      alert("Pesanan dicatat! Hubungi kami via WhatsApp/Discord untuk konfirmasi.");
       modal.remove();
+      showToast("Pesanan dicatat! Hubungi kami via WhatsApp/Discord untuk konfirmasi.");
     }
   };
 };
@@ -347,31 +394,41 @@ window.doClearHistory = async () => {
   await renderHistory();
 };
 
+// ===== FUNGSI LOGIN (dipanggil dari tombol) =====
+async function doLogin() {
+  if (currentUser) { showPage("account"); return; }
+  showLoadingOverlay("Membuka Google Login...");
+  try {
+    await loginWithGoogle();
+    // Kalau popup berhasil, overlay akan otomatis hilang via onAuthChange
+    // Kalau redirect, halaman akan reload sendiri
+    hideLoadingOverlay();
+  } catch(e) {
+    hideLoadingOverlay();
+    console.error("Login error:", e);
+    if (e.code === "auth/api-key-not-valid.-please-pass-a-valid-api-key.") {
+      showToast("Konfigurasi Firebase belum diset. Hubungi admin.", "error");
+    } else {
+      showToast("Login gagal. Silakan coba lagi.", "error");
+    }
+  }
+}
+
 // ===== INIT — tunggu DOM siap =====
-// type="module" sudah defer otomatis, tapi kita pastikan DOM ready
 function init() {
-  // Event listeners — pakai optional chaining supaya tidak error kalau element tidak ada
   el("openSidebar")?.addEventListener("click", openSidebar);
   el("closeSidebar")?.addEventListener("click", closeSidebar);
   el("sidebarOverlay")?.addEventListener("click", closeSidebar);
   el("searchInput")?.addEventListener("input", e => handleSearch(e.target.value));
 
-  el("loginBtn")?.addEventListener("click", async () => {
-    if (!currentUser) {
-      try { await loginWithGoogle(); }
-      catch(e) { console.error(e); alert("Login gagal. Silakan coba lagi."); }
-    } else {
-      showPage("account");
-    }
-  });
-
-  el("googleLoginBtn")?.addEventListener("click", async () => {
-    try { await loginWithGoogle(); }
-    catch(e) { console.error(e); alert("Login gagal. Silakan coba lagi."); }
-  });
+  el("loginBtn")?.addEventListener("click", doLogin);
+  el("googleLoginBtn")?.addEventListener("click", doLogin);
 
   el("logoutBtn")?.addEventListener("click", async () => {
-    if (confirm("Yakin ingin keluar?")) await logoutUser();
+    if (confirm("Yakin ingin keluar?")) {
+      await logoutUser();
+      showToast("Berhasil keluar.");
+    }
   });
 
   // Render awal
@@ -381,7 +438,11 @@ function init() {
   renderSidebar();
 }
 
-// Jalankan init
+// Inject style untuk toast animation
+const style = document.createElement("style");
+style.textContent = `@keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(12px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }`;
+document.head.appendChild(style);
+
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", init);
 } else {
