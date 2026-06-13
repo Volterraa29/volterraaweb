@@ -5,10 +5,6 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRe
 import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, deleteDoc, query, orderBy }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// ============================================================
-// ⚠️  GANTI DENGAN KONFIGURASI FIREBASE KAMU YANG VALID
-//     Buka: Firebase Console → Project Settings → Your Apps
-// ============================================================
 const firebaseConfig = {
   apiKey:            "AIzaSyCLgqGk9O8Nf7i_L4O2Q8nzFphrWtzJPGU",
   authDomain:        "volterraa-store.firebaseapp.com",
@@ -22,44 +18,25 @@ const app      = initializeApp(firebaseConfig);
 const auth     = getAuth(app);
 const db       = getFirestore(app);
 const provider = new GoogleAuthProvider();
-provider.setCustomParameters({ prompt: "select_account" });
+
+// Cek hasil redirect saat halaman pertama kali dibuka
+getRedirectResult(auth).then(result => {
+  if (result?.user) console.log("Redirect login sukses:", result.user.displayName);
+}).catch(e => console.warn("Redirect result:", e.code));
 
 // ===== AUTH =====
-
-/**
- * Login Google — coba popup dulu, fallback ke redirect
- * kalau popup diblokir browser.
- */
 async function loginWithGoogle() {
   try {
-    // Popup lebih cepat dan tidak perlu reload halaman
+    // Coba popup dulu
     const result = await signInWithPopup(auth, provider);
     return result.user;
-  } catch (err) {
-    // Popup diblokir browser → pakai redirect sebagai fallback
-    if (
-      err.code === "auth/popup-blocked" ||
-      err.code === "auth/popup-closed-by-user" ||
-      err.code === "auth/cancelled-popup-request"
-    ) {
+  } catch (e) {
+    if (e.code === "auth/popup-blocked" || e.code === "auth/popup-closed-by-user") {
+      // Fallback ke redirect kalau popup diblokir
       await signInWithRedirect(auth, provider);
     } else {
-      throw err;
+      throw e;
     }
-  }
-}
-
-/**
- * Dipanggil saat halaman pertama kali load —
- * menangkap hasil redirect kalau user baru balik dari Google.
- */
-async function handleRedirectResult() {
-  try {
-    const result = await getRedirectResult(auth);
-    return result ? result.user : null;
-  } catch (e) {
-    console.error("Redirect login error:", e);
-    return null;
   }
 }
 
@@ -73,21 +50,20 @@ function onAuthChange(callback) {
 
 // ===== FIRESTORE: PROFILE =====
 async function saveUserProfile(user) {
-  await setDoc(doc(db, "users", user.uid, "profile", "data"), {
-    name:      user.displayName,
-    email:     user.email,
-    photo:     user.photoURL,
-    updatedAt: new Date().toISOString()
-  }, { merge: true });
+  try {
+    await setDoc(doc(db, "users", user.uid, "profile", "data"), {
+      name:      user.displayName,
+      email:     user.email,
+      photo:     user.photoURL,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+  } catch(e) { console.warn("saveUserProfile:", e.message); }
 }
 
 // ===== FIRESTORE: HISTORY =====
 async function saveOrderToFirestore(user, order) {
   const ref = collection(db, "users", user.uid, "history");
-  await addDoc(ref, {
-    ...order,
-    createdAt: new Date().toISOString()
-  });
+  await addDoc(ref, { ...order, createdAt: new Date().toISOString() });
 }
 
 async function getOrderHistory(user) {
@@ -100,26 +76,27 @@ async function getOrderHistory(user) {
 async function clearOrderHistory(user) {
   const ref  = collection(db, "users", user.uid, "history");
   const snap = await getDocs(ref);
-  const dels = snap.docs.map(d => deleteDoc(doc(db, "users", user.uid, "history", d.id)));
-  await Promise.all(dels);
+  await Promise.all(snap.docs.map(d => deleteDoc(doc(db, "users", user.uid, "history", d.id))));
 }
 
 // ===== FIRESTORE: FAVORIT =====
 async function saveFavoritToFirestore(user, favorites) {
   await setDoc(doc(db, "users", user.uid, "favorit", "data"), {
-    ids:       favorites,
+    ids: favorites,
     updatedAt: new Date().toISOString()
   });
 }
 
 async function getFavoritFromFirestore(user) {
-  const snap = await getDoc(doc(db, "users", user.uid, "favorit", "data"));
-  return snap.exists() ? (snap.data().ids || []) : [];
+  try {
+    const snap = await getDoc(doc(db, "users", user.uid, "favorit", "data"));
+    return snap.exists() ? (snap.data().ids || []) : [];
+  } catch(e) { return []; }
 }
 
 export {
   auth, db,
-  loginWithGoogle, logoutUser, onAuthChange, handleRedirectResult,
+  loginWithGoogle, logoutUser, onAuthChange,
   saveUserProfile,
   saveOrderToFirestore, getOrderHistory, clearOrderHistory,
   saveFavoritToFirestore, getFavoritFromFirestore
