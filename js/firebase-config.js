@@ -19,24 +19,29 @@ const auth     = getAuth(app);
 const db       = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-// Cek hasil redirect saat halaman pertama kali dibuka
-getRedirectResult(auth).then(result => {
-  if (result?.user) console.log("Redirect login sukses:", result.user.displayName);
-}).catch(e => console.warn("Redirect result:", e.code));
-
 // ===== AUTH =====
 async function loginWithGoogle() {
   try {
-    // Coba popup dulu
     const result = await signInWithPopup(auth, provider);
     return result.user;
   } catch (e) {
     if (e.code === "auth/popup-blocked" || e.code === "auth/popup-closed-by-user") {
-      // Fallback ke redirect kalau popup diblokir
       await signInWithRedirect(auth, provider);
     } else {
       throw e;
     }
+  }
+}
+
+// Panggil ini saat halaman load untuk handle hasil redirect
+async function handleRedirectResult() {
+  try {
+    const result = await getRedirectResult(auth);
+    if (result?.user) return result.user;
+    return null;
+  } catch(e) {
+    console.warn("Redirect result error:", e.code);
+    return null;
   }
 }
 
@@ -96,7 +101,7 @@ async function getFavoritFromFirestore(user) {
 
 export {
   auth, db,
-  loginWithGoogle, logoutUser, onAuthChange,
+  loginWithGoogle, logoutUser, onAuthChange, handleRedirectResult,
   saveUserProfile,
   saveOrderToFirestore, getOrderHistory, clearOrderHistory,
   saveFavoritToFirestore, getFavoritFromFirestore
