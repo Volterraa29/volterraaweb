@@ -348,8 +348,16 @@ function init() {
   });
 
   el("logoutBtn")?.addEventListener("click", async () => {
-    if (confirm("Yakin ingin keluar?")) await logoutUser();
-  });
+      if (confirm("Yakin ingin keluar?")) {
+        await logoutUser();
+        currentUser = null;
+        favorites = [];
+        updateAkunUI(null);
+        renderTopupGrid();
+        renderPopularGrid();
+        renderStoreGrid(currentFilter);
+      }
+    });
 
   setInterval(() => window.goBanner((bannerIndex + 1) % 3), 4000);
 
