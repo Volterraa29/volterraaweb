@@ -6,7 +6,7 @@ import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, deleteD
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey:            "AIzaSyCLgqGk9O8Nf7i_L4O2Q8nzFphrWtzJPGU",
+  apiKey:            "AIzaSyCwMMoP4ahIWQn_tBOxfTDm3ArWNF2CXxE",
   authDomain:        "volterraa-store.firebaseapp.com",
   projectId:         "volterraa-store",
   storageBucket:     "volterraa-store.firebasestorage.app",
@@ -33,7 +33,6 @@ async function loginWithGoogle() {
   }
 }
 
-// Panggil ini saat halaman load untuk handle hasil redirect
 async function handleRedirectResult() {
   try {
     const result = await getRedirectResult(auth);
