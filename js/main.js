@@ -9,28 +9,28 @@ import { sendOrderToDiscord } from "./api.js";
 
 // ===== DATA PRODUK =====
 const PRODUCTS = [
-  { id:1,  name:"Mobile Legends",    kategori:"Top Up",   emoji:"⚔️",  color:"#e8f0ff", desc:"Top up Diamond Mobile Legends cepat, aman, dan harga terjangkau.",           price:"Mulai Rp 5.000",  harga:5000  },
-  { id:2,  name:"Garena Free Fire",  kategori:"Top Up",   emoji:"🔥",  color:"#fff4e0", desc:"Top up Diamond Free Fire langsung masuk, proses cepat.",                   price:"Mulai Rp 4.000",  harga:4000  },
-  { id:3,  name:"Genshin Impact",    kategori:"Top Up",   emoji:"💎",  color:"#f5f0ff", desc:"Top up Genesis Crystal & Welkin Moon Genshin Impact.",                     price:"Mulai Rp 10.000", harga:10000 },
-  { id:4,  name:"PUBG Mobile",       kategori:"Top Up",   emoji:"🎯",  color:"#fffbe0", desc:"Top up UC PUBG Mobile murah, terpercaya, dan aman.",                       price:"Mulai Rp 8.000",  harga:8000  },
-  { id:5,  name:"Valorant",          kategori:"Top Up",   emoji:"🌀",  color:"#ffe4e4", desc:"Top up VP Valorant dengan harga terbaik, langsung terima.",                price:"Mulai Rp 12.000", harga:12000 },
-  { id:6,  name:"Honkai: Star Rail", kategori:"Top Up",   emoji:"⭐",  color:"#e4f0ff", desc:"Top up Stellar Jade & Oneiric Shard Honkai: Star Rail.",                   price:"Mulai Rp 10.000", harga:10000 },
-  { id:7,  name:"Zepeto",            kategori:"Top Up",   emoji:"👾",  color:"#f0ffe4", desc:"Top up Zepeto Coin dengan mudah dan aman.",                                price:"Mulai Rp 6.000",  harga:6000  },
-  { id:8,  name:"League of Legends", kategori:"Top Up",   emoji:"🏆",  color:"#fffbe4", desc:"Top up Riot Points League of Legends.",                                    price:"Mulai Rp 15.000", harga:15000 },
-  { id:9,  name:"Joki ML Mythic",    kategori:"Joki",     emoji:"🚀",  color:"#ffe4f0", desc:"Push rank Mobile Legends hingga Mythic. Dijamin aman, akun tidak banned.", price:"Rp 50.000",       harga:50000 },
-  { id:10, name:"Joki FF Grand Master", kategori:"Joki",  emoji:"🎖️", color:"#fff4e0", desc:"Boost rank Free Fire hingga Grand Master dalam 1-3 hari.",                price:"Rp 35.000",       harga:35000 },
-  { id:11, name:"Joki PUBG Platinum",kategori:"Joki",     emoji:"🎯",  color:"#e0f4ff", desc:"Push rank PUBG Mobile hingga Platinum dijamin cepat.",                    price:"Rp 40.000",       harga:40000 },
-  { id:12, name:"Joki Valorant Gold",kategori:"Joki",     emoji:"🌀",  color:"#ffe4e4", desc:"Boost rank Valorant ke Gold, proses 2-5 hari.",                           price:"Rp 55.000",       harga:55000 },
-  { id:13, name:"Skin ML Epic",      kategori:"Item",     emoji:"🛡️", color:"#e4ffe4", desc:"Skin Epic Mobile Legends pilihan, langsung masuk akun dalam 10 menit.",   price:"Rp 25.000",       harga:25000 },
-  { id:14, name:"Item FF Rare",      kategori:"Item",     emoji:"💼",  color:"#ffe4e4", desc:"Bundle dan item rare Free Fire berbagai pilihan.",                         price:"Rp 20.000",       harga:20000 },
-  { id:15, name:"Skin PUBG Legendary",kategori:"Item",    emoji:"🎽",  color:"#fffbe4", desc:"Skin Legendary PUBG Mobile dengan harga spesial.",                        price:"Rp 30.000",       harga:30000 },
-  { id:16, name:"Akun ML Rare",      kategori:"Akun",     emoji:"👑",  color:"#fff8e4", desc:"Akun ML dengan skin epic/legend lengkap, siap pakai.",                    price:"Rp 75.000",       harga:75000 },
-  { id:17, name:"Akun FF Sultan",    kategori:"Akun",     emoji:"🌟",  color:"#f4e4ff", desc:"Akun Free Fire sultan dengan banyak skin langka.",                        price:"Rp 60.000",       harga:60000 },
-  { id:18, name:"Akun Valorant Plat",kategori:"Akun",     emoji:"🌀",  color:"#e4f0ff", desc:"Akun Valorant rank Platinum, skin select.",                               price:"Rp 90.000",       harga:90000 },
-  { id:19, name:"Voucher Google Play",kategori:"Voucher", emoji:"🎫",  color:"#e4f0ff", desc:"Voucher Google Play berbagai nominal, langsung dikirim.",                  price:"Mulai Rp 25.000", harga:25000 },
-  { id:20, name:"Voucher Steam",     kategori:"Voucher",  emoji:"🎮",  color:"#e4ffe4", desc:"Voucher Steam Wallet untuk beli game PC.",                                 price:"Mulai Rp 30.000", harga:30000 },
-  { id:21, name:"Win Boost ML",      kategori:"Boosting", emoji:"⚡",  color:"#ffe4e4", desc:"Boost win rate Mobile Legends Anda dengan cepat dan aman.",               price:"Rp 30.000",       harga:30000 },
-  { id:22, name:"MMR Boost Dota 2",  kategori:"Boosting", emoji:"⚗️", color:"#e4ffe4", desc:"Tingkatkan MMR Dota 2 kamu dengan player profesional.",                   price:"Rp 45.000",       harga:45000 },
+  { id:1,  name:"Mobile Legends",      kategori:"Top Up",   emoji:"⚔️",  color:"#e8f0ff", desc:"Top up Diamond Mobile Legends cepat, aman, dan harga terjangkau.",           price:"Mulai Rp 5.000",  harga:5000  },
+  { id:2,  name:"Garena Free Fire",    kategori:"Top Up",   emoji:"🔥",  color:"#fff4e0", desc:"Top up Diamond Free Fire langsung masuk, proses cepat.",                   price:"Mulai Rp 4.000",  harga:4000  },
+  { id:3,  name:"Genshin Impact",      kategori:"Top Up",   emoji:"💎",  color:"#f5f0ff", desc:"Top up Genesis Crystal & Welkin Moon Genshin Impact.",                     price:"Mulai Rp 10.000", harga:10000 },
+  { id:4,  name:"PUBG Mobile",         kategori:"Top Up",   emoji:"🎯",  color:"#fffbe0", desc:"Top up UC PUBG Mobile murah, terpercaya, dan aman.",                       price:"Mulai Rp 8.000",  harga:8000  },
+  { id:5,  name:"Valorant",            kategori:"Top Up",   emoji:"🌀",  color:"#ffe4e4", desc:"Top up VP Valorant dengan harga terbaik, langsung terima.",                price:"Mulai Rp 12.000", harga:12000 },
+  { id:6,  name:"Honkai: Star Rail",   kategori:"Top Up",   emoji:"⭐",  color:"#e4f0ff", desc:"Top up Stellar Jade & Oneiric Shard Honkai: Star Rail.",                   price:"Mulai Rp 10.000", harga:10000 },
+  { id:7,  name:"Zepeto",              kategori:"Top Up",   emoji:"👾",  color:"#f0ffe4", desc:"Top up Zepeto Coin dengan mudah dan aman.",                                price:"Mulai Rp 6.000",  harga:6000  },
+  { id:8,  name:"League of Legends",   kategori:"Top Up",   emoji:"🏆",  color:"#fffbe4", desc:"Top up Riot Points League of Legends.",                                    price:"Mulai Rp 15.000", harga:15000 },
+  { id:9,  name:"Joki ML Mythic",      kategori:"Joki",     emoji:"🚀",  color:"#ffe4f0", desc:"Push rank Mobile Legends hingga Mythic. Dijamin aman, akun tidak banned.", price:"Rp 50.000",       harga:50000 },
+  { id:10, name:"Joki FF Grand Master",kategori:"Joki",     emoji:"🎖️", color:"#fff4e0", desc:"Boost rank Free Fire hingga Grand Master dalam 1-3 hari.",                price:"Rp 35.000",       harga:35000 },
+  { id:11, name:"Joki PUBG Platinum",  kategori:"Joki",     emoji:"🎯",  color:"#e0f4ff", desc:"Push rank PUBG Mobile hingga Platinum dijamin cepat.",                    price:"Rp 40.000",       harga:40000 },
+  { id:12, name:"Joki Valorant Gold",  kategori:"Joki",     emoji:"🌀",  color:"#ffe4e4", desc:"Boost rank Valorant ke Gold, proses 2-5 hari.",                           price:"Rp 55.000",       harga:55000 },
+  { id:13, name:"Skin ML Epic",        kategori:"Item",     emoji:"🛡️", color:"#e4ffe4", desc:"Skin Epic Mobile Legends pilihan, langsung masuk akun dalam 10 menit.",   price:"Rp 25.000",       harga:25000 },
+  { id:14, name:"Item FF Rare",        kategori:"Item",     emoji:"💼",  color:"#ffe4e4", desc:"Bundle dan item rare Free Fire berbagai pilihan.",                         price:"Rp 20.000",       harga:20000 },
+  { id:15, name:"Skin PUBG Legendary", kategori:"Item",     emoji:"🎽",  color:"#fffbe4", desc:"Skin Legendary PUBG Mobile dengan harga spesial.",                        price:"Rp 30.000",       harga:30000 },
+  { id:16, name:"Akun ML Rare",        kategori:"Akun",     emoji:"👑",  color:"#fff8e4", desc:"Akun ML dengan skin epic/legend lengkap, siap pakai.",                    price:"Rp 75.000",       harga:75000 },
+  { id:17, name:"Akun FF Sultan",      kategori:"Akun",     emoji:"🌟",  color:"#f4e4ff", desc:"Akun Free Fire sultan dengan banyak skin langka.",                        price:"Rp 60.000",       harga:60000 },
+  { id:18, name:"Akun Valorant Plat",  kategori:"Akun",     emoji:"🌀",  color:"#e4f0ff", desc:"Akun Valorant rank Platinum, skin select.",                               price:"Rp 90.000",       harga:90000 },
+  { id:19, name:"Voucher Google Play", kategori:"Voucher",  emoji:"🎫",  color:"#e4f0ff", desc:"Voucher Google Play berbagai nominal, langsung dikirim.",                  price:"Mulai Rp 25.000", harga:25000 },
+  { id:20, name:"Voucher Steam",       kategori:"Voucher",  emoji:"🎮",  color:"#e4ffe4", desc:"Voucher Steam Wallet untuk beli game PC.",                                 price:"Mulai Rp 30.000", harga:30000 },
+  { id:21, name:"Win Boost ML",        kategori:"Boosting", emoji:"⚡",  color:"#ffe4e4", desc:"Boost win rate Mobile Legends Anda dengan cepat dan aman.",               price:"Rp 30.000",       harga:30000 },
+  { id:22, name:"MMR Boost Dota 2",    kategori:"Boosting", emoji:"⚗️", color:"#e4ffe4", desc:"Tingkatkan MMR Dota 2 kamu dengan player profesional.",                   price:"Rp 45.000",       harga:45000 },
 ];
 
 // ===== STATE =====
@@ -39,13 +39,9 @@ let favorites     = [];
 let currentFilter = "semua";
 let bannerIndex   = 0;
 
-// ===== HELPERS =====
 const el = (id) => document.getElementById(id);
 
 // ===== AUTH LISTENER =====
-// Tangkap hasil redirect login Google (jika user baru kembali dari Google)
-handleRedirectResult().catch(console.error);
-
 onAuthChange(async (user) => {
   currentUser = user;
   if (user) {
@@ -62,50 +58,8 @@ onAuthChange(async (user) => {
   if (el("page-favorit")?.classList.contains("active")) renderFavorit();
 });
 
-// ===== TOAST NOTIFICATION (pengganti alert) =====
-function showToast(msg, type = "success") {
-  const existing = document.querySelector(".vt-toast");
-  if (existing) existing.remove();
-
-  const toast = document.createElement("div");
-  toast.className = "vt-toast";
-  toast.textContent = msg;
-  toast.style.cssText = `
-    position:fixed; bottom:88px; left:50%; transform:translateX(-50%);
-    background:${type === "error" ? "#e74c3c" : "#16a34a"};
-    color:#fff; padding:12px 20px; border-radius:12px;
-    font-size:14px; font-weight:600; z-index:999;
-    box-shadow:0 4px 16px rgba(0,0,0,.25);
-    animation:toastIn .25s ease;
-    max-width:90%; text-align:center;
-  `;
-  document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 3500);
-}
-
-// ===== LOADING OVERLAY (untuk proses login) =====
-function showLoadingOverlay(msg = "Memuat...") {
-  const existing = document.querySelector(".vt-loading");
-  if (existing) return;
-  const overlay = document.createElement("div");
-  overlay.className = "vt-loading";
-  overlay.innerHTML = `
-    <div style="background:#fff;border-radius:16px;padding:28px 32px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.2)">
-      <div style="font-size:32px;margin-bottom:12px">⏳</div>
-      <div style="font-size:15px;font-weight:600;color:#1b1b2a">${msg}</div>
-      <div style="font-size:13px;color:#6b7280;margin-top:6px">Mohon tunggu sebentar...</div>
-    </div>
-  `;
-  overlay.style.cssText = `
-    position:fixed;inset:0;background:rgba(0,0,0,.5);
-    z-index:200;display:flex;align-items:center;justify-content:center;
-  `;
-  document.body.appendChild(overlay);
-}
-
-function hideLoadingOverlay() {
-  document.querySelector(".vt-loading")?.remove();
-}
+// Handle hasil redirect login (saat kembali dari Google)
+handleRedirectResult();
 
 // ===== UPDATE UI AKUN =====
 function updateAkunUI(user) {
@@ -137,12 +91,11 @@ function updateAkunUI(user) {
   }
 }
 
-// ===== RENDER: TOPUP GRID =====
+// ===== RENDER FUNCTIONS =====
 function renderTopupGrid() {
   const grid = el("topupGrid");
   if (!grid) return;
-  const items = PRODUCTS.filter(p => p.kategori === "Top Up").slice(0, 8);
-  grid.innerHTML = items.map(p => `
+  grid.innerHTML = PRODUCTS.filter(p => p.kategori === "Top Up").slice(0,8).map(p => `
     <div class="game-item" onclick='openModal(${JSON.stringify(p)})'>
       <div class="game-thumb" style="background:${p.color}">
         <span style="font-size:28px">${p.emoji}</span>
@@ -152,15 +105,12 @@ function renderTopupGrid() {
   `).join("");
 }
 
-// ===== RENDER: POPULAR GRID =====
 function renderPopularGrid() {
   const grid = el("popularGrid");
   if (!grid) return;
-  const items = PRODUCTS.filter(p => ["Joki","Boosting","Item"].includes(p.kategori)).slice(0, 4);
-  grid.innerHTML = items.map(p => renderStoreCard(p)).join("");
+  grid.innerHTML = PRODUCTS.filter(p => ["Joki","Boosting","Item"].includes(p.kategori)).slice(0,4).map(p => renderStoreCard(p)).join("");
 }
 
-// ===== RENDER: STORE CARD =====
 function renderStoreCard(p) {
   const isFav = favorites.includes(p.id);
   return `
@@ -179,7 +129,6 @@ function renderStoreCard(p) {
   `;
 }
 
-// ===== RENDER: STORE GRID =====
 function renderStoreGrid(filter) {
   currentFilter = filter;
   const grid = el("storeGrid");
@@ -190,7 +139,6 @@ function renderStoreGrid(filter) {
     : '<div class="empty" style="grid-column:1/-1"><div class="empty-icon">📦</div>Tidak ada produk</div>';
 }
 
-// ===== RENDER: HISTORY =====
 async function renderHistory() {
   const list = el("historyList");
   if (!list) return;
@@ -222,7 +170,6 @@ async function renderHistory() {
   }
 }
 
-// ===== RENDER: FAVORIT =====
 function renderFavorit() {
   const list = el("favoritList");
   if (!list) return;
@@ -233,21 +180,20 @@ function renderFavorit() {
   const items = PRODUCTS.filter(p => favorites.includes(p.id));
   list.innerHTML = items.length
     ? '<div class="store-grid" style="padding:0">' + items.map(p => renderStoreCard(p)).join("") + '</div>'
-    : '<div class="empty"><div class="empty-icon">❤️</div>Belum ada produk favorit<br><small>Tap hati pada produk untuk menambahkan</small></div>';
+    : '<div class="empty"><div class="empty-icon">❤️</div>Belum ada produk favorit</div>';
 }
 
-// ===== RENDER: SIDEBAR =====
 function renderSidebar() {
   const sidebar = el("sidebarContent");
   if (!sidebar) return;
   const cats = [
-    { label:"Top Up Game", filter:"Top Up"  },
-    { label:"Joki",        filter:"Joki",    baru:true },
-    { label:"Item",        filter:"Item"    },
-    { label:"Akun",        filter:"Akun"    },
-    { label:"Voucher",     filter:"Voucher" },
-    { label:"Boosting",    filter:"Boosting"},
-    { label:"Semua Produk",filter:"semua"   },
+    { label:"Top Up Game", filter:"Top Up"   },
+    { label:"Joki",        filter:"Joki",     baru:true },
+    { label:"Item",        filter:"Item"      },
+    { label:"Akun",        filter:"Akun"      },
+    { label:"Voucher",     filter:"Voucher"   },
+    { label:"Boosting",    filter:"Boosting"  },
+    { label:"Semua Produk",filter:"semua"     },
   ];
   sidebar.innerHTML =
     cats.map(c => `
@@ -264,7 +210,7 @@ function renderSidebar() {
      </button>`;
 }
 
-// ===== NAVIGASI =====
+// ===== GLOBAL FUNCTIONS (dipanggil dari HTML onclick) =====
 window.showPage = async (page) => {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
@@ -283,44 +229,40 @@ window.setFilter = (btn, filter) => {
 };
 
 window.filterKategori = (kat) => {
-  showPage("store");
+  window.showPage("store");
   document.querySelectorAll(".filter-btn").forEach(b => {
     b.classList.toggle("active", b.dataset.filter === kat || (kat === "semua" && b.dataset.filter === "semua"));
   });
   renderStoreGrid(kat);
 };
 
-window.sidebarFilter = (cat) => { filterKategori(cat); closeSidebar(); };
+window.sidebarFilter = (cat) => { window.filterKategori(cat); window.closeSidebar(); };
 
-// ===== FAVORIT =====
 window.toggleFav = async (id, btn) => {
-  if (!currentUser) { showToast("Login dulu untuk menyimpan favorit!", "error"); return; }
+  if (!currentUser) { alert("Login dulu untuk menyimpan favorit!"); return; }
   const idx = favorites.indexOf(id);
   if (idx > -1) { favorites.splice(idx, 1); btn.textContent = "🤍"; }
   else          { favorites.push(id);        btn.textContent = "❤️"; }
   await saveFavoritToFirestore(currentUser, favorites);
 };
 
-// ===== BANNER =====
 window.goBanner = (n) => {
   bannerIndex = n;
   const track = el("bannerTrack");
   if (track) track.style.transform = `translateX(${-n * 100}%)`;
   document.querySelectorAll(".banner-dots span").forEach((d, i) => d.classList.toggle("active", i === n));
 };
-setInterval(() => goBanner((bannerIndex + 1) % 3), 4000);
 
-// ===== SIDEBAR =====
-window.openSidebar  = () => {
-  el("sidebar")?.classList.add("show");
-  el("sidebarOverlay")?.classList.add("show");
-};
-window.closeSidebar = () => {
-  el("sidebar")?.classList.remove("show");
-  el("sidebarOverlay")?.classList.remove("show");
+window.openSidebar  = () => { el("sidebar")?.classList.add("show"); el("sidebarOverlay")?.classList.add("show"); };
+window.closeSidebar = () => { el("sidebar")?.classList.remove("show"); el("sidebarOverlay")?.classList.remove("show"); };
+
+window.doClearHistory = async () => {
+  if (!currentUser) return;
+  if (!confirm("Hapus semua riwayat pesanan?")) return;
+  await clearOrderHistory(currentUser);
+  await renderHistory();
 };
 
-// ===== ORDER MODAL =====
 window.openModal = (product) => {
   document.querySelector(".order-modal")?.remove();
   const modal = document.createElement("div");
@@ -339,7 +281,7 @@ window.openModal = (product) => {
       <input type="text" id="buyerId"   placeholder="ID Game / Username (jika perlu)">
       <input type="text" id="orderNote" placeholder="Catatan tambahan (opsional)">
       <div class="modal-btns">
-        <button class="btn-pesan" id="confirmOrder">Pesan Sekarang</button>
+        <button class="btn-pesan" id="confirmOrder">🛒 Pesan Sekarang</button>
         <button class="btn-tutup" id="closeModal">Batal</button>
       </div>
     </div>
@@ -347,33 +289,31 @@ window.openModal = (product) => {
   document.body.appendChild(modal);
   el("closeModal").onclick = () => modal.remove();
   modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
-
   el("confirmOrder").onclick = async () => {
     const name   = el("buyerName").value.trim();
     const gameId = el("buyerId").value.trim();
     const note   = el("orderNote").value.trim();
-    if (!name) { showToast("Masukkan nama Anda!", "error"); return; }
+    if (!name) { alert("Masukkan nama Anda!"); return; }
     const btn = el("confirmOrder");
-    btn.textContent = "Memproses...";
+    btn.textContent = "⏳ Memproses...";
     btn.disabled = true;
     const order = { product:product.name, emoji:product.emoji, kategori:product.kategori, price:product.price, harga:product.harga, name, gameId, note };
     try {
       if (currentUser) await saveOrderToFirestore(currentUser, order);
       await sendOrderToDiscord(product, name, gameId, note);
+      alert(`✅ Pesanan berhasil!\n\nProduk: ${product.name}\nPemesan: ${name}\n\nTim kami segera memproses pesanan Anda.`);
       modal.remove();
-      showToast(`✅ Pesanan ${product.name} berhasil! Tim kami segera memproses.`);
     } catch(e) {
+      alert("✅ Pesanan dicatat! Hubungi kami via WhatsApp/Discord untuk konfirmasi.");
       modal.remove();
-      showToast("Pesanan dicatat! Hubungi kami via WhatsApp/Discord untuk konfirmasi.");
     }
   };
 };
 
-// ===== SEARCH =====
 window.handleSearch = (q) => {
   q = q.trim().toLowerCase();
   if (!q) { renderStoreGrid(currentFilter); return; }
-  showPage("store");
+  window.showPage("store");
   const items = PRODUCTS.filter(p =>
     p.name.toLowerCase().includes(q) ||
     p.kategori.toLowerCase().includes(q) ||
@@ -386,62 +326,38 @@ window.handleSearch = (q) => {
     : '<div class="empty" style="grid-column:1/-1"><div class="empty-icon">🔍</div>Produk tidak ditemukan</div>';
 };
 
-// ===== CLEAR HISTORY =====
-window.doClearHistory = async () => {
-  if (!currentUser) return;
-  if (!confirm("Hapus semua riwayat pesanan?")) return;
-  await clearOrderHistory(currentUser);
-  await renderHistory();
-};
-
-// ===== FUNGSI LOGIN (dipanggil dari tombol) =====
-async function doLogin() {
-  if (currentUser) { showPage("account"); return; }
-  showLoadingOverlay("Membuka Google Login...");
-  try {
-    await loginWithGoogle();
-    // Kalau popup berhasil, overlay akan otomatis hilang via onAuthChange
-    // Kalau redirect, halaman akan reload sendiri
-    hideLoadingOverlay();
-  } catch(e) {
-    hideLoadingOverlay();
-    console.error("Login error:", e);
-    if (e.code === "auth/api-key-not-valid.-please-pass-a-valid-api-key.") {
-      showToast("Konfigurasi Firebase belum diset. Hubungi admin.", "error");
-    } else {
-      showToast("Login gagal. Silakan coba lagi.", "error");
-    }
-  }
-}
-
-// ===== INIT — tunggu DOM siap =====
+// ===== INIT =====
 function init() {
-  el("openSidebar")?.addEventListener("click", openSidebar);
-  el("closeSidebar")?.addEventListener("click", closeSidebar);
-  el("sidebarOverlay")?.addEventListener("click", closeSidebar);
-  el("searchInput")?.addEventListener("input", e => handleSearch(e.target.value));
+  el("openSidebar")?.addEventListener("click", window.openSidebar);
+  el("closeSidebar")?.addEventListener("click", window.closeSidebar);
+  el("sidebarOverlay")?.addEventListener("click", window.closeSidebar);
+  el("searchInput")?.addEventListener("input", e => window.handleSearch(e.target.value));
 
-  el("loginBtn")?.addEventListener("click", doLogin);
-  el("googleLoginBtn")?.addEventListener("click", doLogin);
-
-  el("logoutBtn")?.addEventListener("click", async () => {
-    if (confirm("Yakin ingin keluar?")) {
-      await logoutUser();
-      showToast("Berhasil keluar.");
+  el("loginBtn")?.addEventListener("click", async () => {
+    if (!currentUser) {
+      try { await loginWithGoogle(); }
+      catch(e) { console.error(e); alert("Login gagal: " + e.message); }
+    } else {
+      window.showPage("account");
     }
   });
 
-  // Render awal
+  el("googleLoginBtn")?.addEventListener("click", async () => {
+    try { await loginWithGoogle(); }
+    catch(e) { console.error(e); alert("Login gagal: " + e.message); }
+  });
+
+  el("logoutBtn")?.addEventListener("click", async () => {
+    if (confirm("Yakin ingin keluar?")) await logoutUser();
+  });
+
+  setInterval(() => window.goBanner((bannerIndex + 1) % 3), 4000);
+
   renderTopupGrid();
   renderPopularGrid();
   renderStoreGrid("semua");
   renderSidebar();
 }
-
-// Inject style untuk toast animation
-const style = document.createElement("style");
-style.textContent = `@keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(12px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }`;
-document.head.appendChild(style);
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", init);
